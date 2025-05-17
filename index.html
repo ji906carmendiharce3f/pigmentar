@@ -2,7 +2,7 @@
 <html lang="es">
 
 <head>
-     <meta charset="UTF-8" />
+    <meta charset="UTF-8" />
     <meta name="description" content="Jardín Nº 906" />
     <meta name="keywords" content="Educación" />
     <meta name="author" content="Rocio Sierra" />
@@ -150,11 +150,12 @@
         <div id="colorPreview"></div>
         <div class=" column">
             <p>Escribí tu nombre</p>
- <input type="text" id="artistName" placeholder="Tu nombre" style="padding: 10px; margin-left: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;">
+            <input type="text" id="artistName" placeholder="Tu nombre"
+                style="padding: 10px; margin-left: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;">
 
         </div>
 
-       
+
         <button id="addButton">AGREGAR</button>
     </div>
 
@@ -263,9 +264,16 @@
             ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
         }
 
+        // Soporte para mouse
         canvas.addEventListener("mousedown", startPosition);
         canvas.addEventListener("mouseup", endPosition);
         canvas.addEventListener("mousemove", draw);
+
+        // Soporte para pantallas táctiles
+        canvas.addEventListener("touchstart", startPosition);
+        canvas.addEventListener("touchend", endPosition);
+        canvas.addEventListener("touchmove", draw);
+
 
         addButton.addEventListener("click", () => {
             const imgData = canvas.toDataURL("image/png");
@@ -278,6 +286,51 @@
 
             window.location.href = 'gallery.html';
         });
+
+
+        // Función para obtener las coordenadas correctas según el evento
+        function getEventPos(e) {
+            if (e.touches && e.touches.length > 0) {
+                return {
+                    x: e.touches[0].clientX - canvas.getBoundingClientRect().left,
+                    y: e.touches[0].clientY - canvas.getBoundingClientRect().top
+                };
+            } else {
+                return {
+                    x: e.clientX - canvas.getBoundingClientRect().left,
+                    y: e.clientY - canvas.getBoundingClientRect().top
+                };
+            }
+        }
+
+        function startPosition(e) {
+            e.preventDefault();  // Evita scrolling en móvil
+            painting = true;
+            draw(e);
+        }
+
+        function endPosition(e) {
+            e.preventDefault();
+            painting = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!painting) return;
+            e.preventDefault();
+
+            const pos = getEventPos(e);
+
+            ctx.lineWidth = 5;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = getLightenedColor();
+
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+        }
+
     </script>
 </body>
 
