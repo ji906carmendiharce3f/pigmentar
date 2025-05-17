@@ -112,12 +112,25 @@
             cursor: pointer;
         }
 
+        .color-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding: 10px;
+            gap: 10px;
+        }
+
         .row {
             display: flex;
-            align-items: center;
-            gap: 10px;
+            flex-wrap: wrap;
             justify-content: center;
-
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 0 10px;
+            text-align: center;
         }
     </style>
 </head>
@@ -137,27 +150,27 @@
 
 
     <div id="mainApp" style="display: none;">
-        <div style="text-align: center;">
-            <!-- Colores -->
+        <div class="color-row">
+            <!-- Colores en una sola fila -->
             <img id="color1" class="color-picker" src="./2.png" alt="Marrón" />
             <img id="color2" class="color-picker" src="./1.png" alt="Verde" />
             <img id="color3" class="color-picker" src="./3.png" alt="Naranja" />
             <img id="agua" class="color-picker" src="./agua.png" alt="Agua" />
         </div>
     </div>
+
     <canvas style="text-align: center;" id="canvas"></canvas>
-    <div class="row" style="text-align: center;">
+    <div class="row">
         <div id="colorPreview"></div>
-        <div class=" column">
-            <p>Escribí tu nombre</p>
+        <div>
+            <p style="margin: 0;">Escribí tu nombre</p>
             <input type="text" id="artistName" placeholder="Tu nombre"
-                style="padding: 10px; margin-left: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;">
-
+                style="padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;">
+                <button id="addButton">AGREGAR</button>
         </div>
-
-
-        <button id="addButton">AGREGAR</button>
+   
     </div>
+
 
     <script>
         document.getElementById("startButton").addEventListener("click", () => {
