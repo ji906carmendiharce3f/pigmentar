@@ -13,19 +13,10 @@
     <title>PIGMENTAR - Jardín Nº 906 - Carmen Diharce - 3F</title>
 
     <style>
-        .rubik-600 {
-            font-family: "Rubik", sans-serif;
-            font-optical-sizing: auto;
-            font-weight: 600;
-            font-style: normal;
-        }
-
-
         body {
             background-image: url(./fondo1\ \(1\).jpg);
             background-size: cover;
-            font-family: "Rubik";
-
+            font-family: "Rubik", sans-serif;
         }
 
         #introScreen {
@@ -57,6 +48,7 @@
             background-color: white;
             display: block;
             margin: 0 auto;
+            touch-action: none; /* ✅ Previene el scroll en móvil */
         }
 
         .color-picker {
@@ -72,46 +64,22 @@
             object-fit: contain;
         }
 
-
         #colorPreview {
             margin-top: 10px;
             width: 100px;
             height: 100px;
-            min-width: 100px;
-            min-height: 100px;
-            max-width: 100px;
-            max-height: 100px;
             border: 2px solid #000;
             background-color: white;
-            padding: 0;
-            color: #000;
             font-size: 20px;
-            box-sizing: border-box;
-            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
         }
 
-
-        #addButton {
+        #addButton,
+        #startButton {
             margin-top: 20px;
             padding: 10px 20px;
-            background-color: orangered;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        #addButton:hover {
-            background-color: orangered;
-        }
-
-        #startButton {
-
-            padding: 12px 30px;
-            font-size: 16px;
             background-color: orangered;
             color: white;
             border: none;
@@ -122,87 +90,50 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-wrap: nowrap;
             overflow-x: auto;
             padding: 10px;
             gap: 10px;
         }
 
-        /* Estilo general para la fila donde se encuentran el preview, el campo para nombre y el botón "AGREGAR" */
         .row {
             display: flex;
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
-            /* Permite que los elementos se ajusten si es necesario */
             gap: 15px;
-            /* Espacio entre los elementos */
             margin-top: 20px;
             padding: 0 10px;
             text-align: center;
             width: 100%;
-            /* Asegura que el contenedor ocupe todo el ancho disponible */
         }
 
-        /* Para pantallas pequeñas */
         @media (max-width: 600px) {
-            .row {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-wrap: wrap;
-                /* Permite que los elementos se ajusten si es necesario */
-                gap: 5px;
-                /* Espacio entre los elementos */
-                margin-top: 10px;
-                padding: 0 10px;
-                text-align: center;
-                width: 100%;
-                /* Asegura que el contenedor ocupe todo el ancho disponible */
+            .color-picker {
+                width: 70px;
+                height: 70px;
             }
 
             #colorPreview {
                 width: 70px;
-                /* Ajusta el tamaño del colorPreview */
                 height: 70px;
-                min-width: 60px;
-                min-height: 60px;
-            }
-
-            #canvas{
-                text-align: center;
-                margin: 0 auto;
-            }
-
-            .color-picker {
-                width: 70px;
-                /* Ajusta el tamaño del colorPreview */
-                height: 70px;
-                min-width: 60px;
-                min-height: 60px;
             }
 
             #artistName {
                 width: 100px;
-                /* Ajusta el ancho del campo de texto */
                 font-size: 14px;
             }
 
             #addButton {
                 padding: 8px 16px;
-                /* Ajusta el tamaño del botón */
                 font-size: 14px;
             }
 
-            /* Ajuste de la imagen del logo para dispositivos móviles */
             #introScreen img {
                 max-width: 100%;
                 width: 100%;
             }
         }
     </style>
-
-
 </head>
 
 <body>
@@ -218,10 +149,8 @@
         <button id="startButton">INICIAR</button>
     </div>
 
-
     <div id="mainApp" style="display: none;">
         <div class="color-row">
-            <!-- Colores en una sola fila -->
             <img id="color1" class="color-picker" src="./2.png" alt="Marrón" />
             <img id="color2" class="color-picker" src="./1.png" alt="Verde" />
             <img id="color3" class="color-picker" src="./3.png" alt="Naranja" />
@@ -229,7 +158,8 @@
         </div>
     </div>
 
-    <canvas style="text-align: center;" id="canvas"></canvas>
+    <canvas id="canvas"></canvas>
+
     <div class="row">
         <div id="colorPreview"></div>
         <div>
@@ -238,32 +168,31 @@
                 style="padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;">
             <button id="addButton">AGREGAR</button>
         </div>
-
     </div>
 
-
     <script>
-        document.getElementById("startButton").addEventListener("click", () => {
-            document.getElementById("introScreen").style.display = "none";
-            document.getElementById("mainApp").style.display = "block";
-            resizeCanvas();
-        });
-
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
         const colorPreview = document.getElementById("colorPreview");
         const addButton = document.getElementById("addButton");
+
+        let baseColor = "white";
+        let aguaLevel = 0;
+        let painting = false;
 
         function resizeCanvas() {
             canvas.width = canvas.clientWidth;
             canvas.height = 500;
         }
 
-        resizeCanvas();
         window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
 
-        let baseColor = "white";
-        let aguaLevel = 0;
+        document.getElementById("startButton").addEventListener("click", () => {
+            document.getElementById("introScreen").style.display = "none";
+            document.getElementById("mainApp").style.display = "block";
+            resizeCanvas();
+        });
 
         function colorToHSL(color) {
             const tmp = document.createElement("canvas");
@@ -291,11 +220,7 @@
                 h /= 6;
             }
 
-            return {
-                h: Math.round(h * 360),
-                s: Math.round(s * 100),
-                l: Math.round(l * 100)
-            };
+            return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
         }
 
         function getLightenedColor() {
@@ -322,77 +247,6 @@
             updatePreview();
         });
 
-        let painting = false;
-
-        function getEventPos(e) {
-    if (e.touches && e.touches.length > 0) {
-        return {
-            x: e.touches[0].clientX - canvas.getBoundingClientRect().left,
-            y: e.touches[0].clientY - canvas.getBoundingClientRect().top
-        };
-    } else {
-        return {
-            x: e.clientX - canvas.getBoundingClientRect().left,
-            y: e.clientY - canvas.getBoundingClientRect().top
-        };
-    }
-}
-
-function startPosition(e) {
-    // Evitar dibujar si el toque/clic no es en el canvas
-    if (e.target !== canvas) return;
-
-    e.preventDefault();
-    painting = true;
-    draw(e);
-}
-
-function endPosition(e) {
-    e.preventDefault();
-    painting = false;
-    ctx.beginPath();
-}
-
-function draw(e) {
-    if (!painting) return;
-    e.preventDefault();
-
-    const pos = getEventPos(e);
-
-    ctx.lineWidth = 5;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = getLightenedColor();
-
-    ctx.lineTo(pos.x, pos.y);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(pos.x, pos.y);
-}
-
-
-  canvas.addEventListener("mousedown", startPosition);
-canvas.addEventListener("mouseup", endPosition);
-canvas.addEventListener("mousemove", draw);
-
-canvas.addEventListener("touchstart", startPosition, { passive: false });
-canvas.addEventListener("touchend", endPosition, { passive: false });
-canvas.addEventListener("touchmove", draw, { passive: false });
-
-
-        addButton.addEventListener("click", () => {
-            const imgData = canvas.toDataURL("image/png");
-            let name = document.getElementById("artistName").value.trim();
-            if (name === "") name = "Artista Desconocido";
-
-            let images = JSON.parse(localStorage.getItem('images')) || [];
-            images.push({ src: imgData, artist: name });
-            localStorage.setItem('images', JSON.stringify(images));
-
-            window.location.href = 'gallery.html';
-        });
-
-
-        // Función para obtener las coordenadas correctas según el evento
         function getEventPos(e) {
             if (e.touches && e.touches.length > 0) {
                 return {
@@ -408,7 +262,8 @@ canvas.addEventListener("touchmove", draw, { passive: false });
         }
 
         function startPosition(e) {
-            e.preventDefault();  // Evita scrolling en móvil
+            if (e.target !== canvas) return;
+            e.preventDefault();
             painting = true;
             draw(e);
         }
@@ -424,7 +279,6 @@ canvas.addEventListener("touchmove", draw, { passive: false });
             e.preventDefault();
 
             const pos = getEventPos(e);
-
             ctx.lineWidth = 5;
             ctx.lineCap = "round";
             ctx.strokeStyle = getLightenedColor();
@@ -435,6 +289,25 @@ canvas.addEventListener("touchmove", draw, { passive: false });
             ctx.moveTo(pos.x, pos.y);
         }
 
+        canvas.addEventListener("mousedown", startPosition);
+        canvas.addEventListener("mouseup", endPosition);
+        canvas.addEventListener("mousemove", draw);
+
+        canvas.addEventListener("touchstart", startPosition, { passive: false });
+        canvas.addEventListener("touchend", endPosition, { passive: false });
+        canvas.addEventListener("touchmove", draw, { passive: false });
+
+        addButton.addEventListener("click", () => {
+            const imgData = canvas.toDataURL("image/png");
+            let name = document.getElementById("artistName").value.trim();
+            if (name === "") name = "Artista Desconocido";
+
+            let images = JSON.parse(localStorage.getItem('images')) || [];
+            images.push({ src: imgData, artist: name });
+            localStorage.setItem('images', JSON.stringify(images));
+
+            window.location.href = 'gallery.html';
+        });
     </script>
 </body>
 
