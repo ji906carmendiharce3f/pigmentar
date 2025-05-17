@@ -130,49 +130,71 @@
 
         /* Estilo general para la fila donde se encuentran el preview, el campo para nombre y el botón "AGREGAR" */
         .row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap; /* Permite que los elementos se ajusten si es necesario */
-    gap: 15px; /* Espacio entre los elementos */
-    margin-top: 20px;
-    padding: 0 10px;
-    text-align: center;
-    width: 100%; /* Asegura que el contenedor ocupe todo el ancho disponible */
-}
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            /* Permite que los elementos se ajusten si es necesario */
+            gap: 15px;
+            /* Espacio entre los elementos */
+            margin-top: 20px;
+            padding: 0 10px;
+            text-align: center;
+            width: 100%;
+            /* Asegura que el contenedor ocupe todo el ancho disponible */
+        }
 
-/* Para pantallas pequeñas */
-@media (max-width: 600px) {
-    .row {
-        flex-direction: row; /* Alinea los elementos en una sola fila */
-        justify-content: space-between; /* Distribuye los elementos de manera equitativa */
-        gap: 10px; /* Reduce el espacio entre los elementos */
-        width: 100%; /* Asegura que el contenedor ocupe todo el ancho */
-    }
+        /* Para pantallas pequeñas */
+        @media (max-width: 600px) {
+            .row {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap;
+                /* Permite que los elementos se ajusten si es necesario */
+                gap: 15px;
+                /* Espacio entre los elementos */
+                margin-top: 20px;
+                padding: 0 10px;
+                text-align: center;
+                width: 100%;
+                /* Asegura que el contenedor ocupe todo el ancho disponible */
+            }
 
-    #colorPreview {
-        width: 60px; /* Ajusta el tamaño del colorPreview */
-        height: 60px;
-        min-width: 60px;
-        min-height: 60px;
-    }
+            #colorPreview {
+                width: 60px;
+                /* Ajusta el tamaño del colorPreview */
+                height: 60px;
+                min-width: 60px;
+                min-height: 60px;
+            }
 
-    #artistName {
-        width: 100px; /* Ajusta el ancho del campo de texto */
-        font-size: 14px;
-    }
+            .color-picker {
+                width: 60px;
+                /* Ajusta el tamaño del colorPreview */
+                height: 60px;
+                min-width: 60px;
+                min-height: 60px;
+            }
 
-    #addButton {
-        padding: 8px 16px; /* Ajusta el tamaño del botón */
-        font-size: 14px;
-    }
+            #artistName {
+                width: 100px;
+                /* Ajusta el ancho del campo de texto */
+                font-size: 14px;
+            }
 
-    /* Ajuste de la imagen del logo para dispositivos móviles */
-    #introScreen img {
-        max-width: 100%;
-        width: 100%;
-    }
-}
+            #addButton {
+                padding: 8px 16px;
+                /* Ajusta el tamaño del botón */
+                font-size: 14px;
+            }
+
+            /* Ajuste de la imagen del logo para dispositivos móviles */
+            #introScreen img {
+                max-width: 100%;
+                width: 100%;
+            }
+        }
     </style>
 
 
