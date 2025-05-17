@@ -180,19 +180,30 @@
         let aguaLevel = 0;
         let painting = false;
 
-        function resizeCanvas() {
-            canvas.width = canvas.clientWidth;
-            canvas.height = 500;
-        }
+    function resizeCanvas() {
+    const tempImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+    canvas.width = canvas.clientWidth;
+    canvas.height = 500;
+
+    ctx.putImageData(tempImage, 0, 0);
+}
+
 
         window.addEventListener("resize", resizeCanvas);
         resizeCanvas();
 
-        document.getElementById("startButton").addEventListener("click", () => {
-            document.getElementById("introScreen").style.display = "none";
-            document.getElementById("mainApp").style.display = "block";
-            resizeCanvas();
-        });
+       document.getElementById("startButton").addEventListener("click", () => {
+    document.getElementById("introScreen").style.display = "none";
+    document.getElementById("mainApp").style.display = "block";
+    
+    // Solo redimensionamos una vez al iniciar
+    resizeCanvas();
+
+    // Luego quitamos el evento para evitar que se borre accidentalmente
+    window.removeEventListener("resize", resizeCanvas);
+});
+
 
         function colorToHSL(color) {
             const tmp = document.createElement("canvas");
