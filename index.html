@@ -59,13 +59,19 @@
             margin: 0 auto;
         }
 
-        .color-picker {
-            display: inline-block;
-            width: 100px;
-            height: 100px;
-            margin: 5px;
-            cursor: pointer;
-        }
+      .color-picker {
+    flex: 0 0 auto;
+    width: 22vw;
+    height: 22vw;
+    max-width: 100px;
+    max-height: 100px;
+    min-width: 60px;
+    min-height: 60px;
+    margin: 5px;
+    cursor: pointer;
+    object-fit: contain;
+}
+
 
         #colorPreview {
             margin-top: 10px;
@@ -132,7 +138,32 @@
             padding: 0 10px;
             text-align: center;
         }
-    </style>
+        
+
+    @media (max-width: 400px) {
+        .color-picker {
+            width: 20vw;
+            height: 20vw;
+        }
+
+        #colorPreview {
+            width: 80px;
+            height: 80px;
+        }
+
+        #addButton {
+            font-size: 14px;
+            padding: 8px 16px;
+        }
+
+        #artistName {
+            font-size: 14px;
+            padding: 8px;
+        }
+    }
+</style>
+
+    
 </head>
 
 <body>
