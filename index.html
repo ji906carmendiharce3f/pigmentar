@@ -59,18 +59,18 @@
             margin: 0 auto;
         }
 
-      .color-picker {
-    flex: 0 0 auto;
-    width: 22vw;
-    height: 22vw;
-    max-width: 100px;
-    max-height: 100px;
-    min-width: 60px;
-    min-height: 60px;
-    margin: 5px;
-    cursor: pointer;
-    object-fit: contain;
-}
+        .color-picker {
+            flex: 0 0 auto;
+            width: 22vw;
+            height: 22vw;
+            max-width: 100px;
+            max-height: 100px;
+            min-width: 60px;
+            min-height: 60px;
+            margin: 5px;
+            cursor: pointer;
+            object-fit: contain;
+        }
 
 
         #colorPreview {
@@ -128,42 +128,52 @@
             gap: 10px;
         }
 
+        /* Estilo general para la fila donde se encuentran el preview, el campo para nombre y el botón "AGREGAR" */
         .row {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
             align-items: center;
+            flex-wrap: wrap;
+            /* Permite que los elementos se ajusten en múltiples líneas si es necesario */
             gap: 15px;
+            /* Espacio entre los elementos */
             margin-top: 20px;
             padding: 0 10px;
             text-align: center;
         }
-        
 
-    @media (max-width: 400px) {
-        .color-picker {
-            width: 20vw;
-            height: 20vw;
+        /* Para pantallas pequeñas */
+        @media (max-width: 600px) {
+
+            /* Los elementos dentro de la fila se mostrarán en una sola línea */
+            .row {
+                flex-direction: row;
+                /* Alinea los elementos en una sola fila */
+                justify-content: space-between;
+                /* Distribuye los elementos de manera equitativa */
+                gap: 10px;
+                /* Reduce el espacio entre los elementos */
+            }
+
+            #colorPreview {
+                width: 60px;
+                height: 60px;
+            }
+
+            #artistName {
+                width: 100px;
+                /* Ajusta el ancho del campo de texto */
+                font-size: 14px;
+            }
+
+            #addButton {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
         }
+    </style>
 
-        #colorPreview {
-            width: 80px;
-            height: 80px;
-        }
 
-        #addButton {
-            font-size: 14px;
-            padding: 8px 16px;
-        }
-
-        #artistName {
-            font-size: 14px;
-            padding: 8px;
-        }
-    }
-</style>
-
-    
 </head>
 
 <body>
@@ -197,9 +207,9 @@
             <p style="margin: 0;">Escribí tu nombre</p>
             <input type="text" id="artistName" placeholder="Tu nombre"
                 style="padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;">
-                <button id="addButton">AGREGAR</button>
+            <button id="addButton">AGREGAR</button>
         </div>
-   
+
     </div>
 
 
