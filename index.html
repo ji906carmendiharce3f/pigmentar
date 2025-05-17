@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+     <meta charset="UTF-8" />
+    <meta name="description" content="Jardín Nº 906" />
+    <meta name="keywords" content="Educación" />
+    <meta name="author" content="Rocio Sierra" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <title>PIGMENTAR - Jardín Nº 906 - Carmen Diharce - 3F</title>
+
+    <style>
+        .rubik-600 {
+            font-family: "Rubik", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 600;
+            font-style: normal;
+        }
+
+
+        body {
+            background-image: url(./fondo1\ \(1\).jpg);
+            background-size: cover;
+            font-family: "Rubik";
+
+        }
+
+        #introScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('./fondo1 (1).jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            color: white;
+            z-index: 9999;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: auto;
+        }
+
+        #canvas {
+            border: 2px solid black;
+            width: 100%;
+            height: 500px;
+            cursor: crosshair;
+            background-color: white;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .color-picker {
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        #colorPreview {
+            margin-top: 10px;
+            width: 100px;
+            height: 100px;
+            min-width: 100px;
+            min-height: 100px;
+            max-width: 100px;
+            max-height: 100px;
+            border: 2px solid #000;
+            background-color: white;
+            padding: 0;
+            color: #000;
+            font-size: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+
+        #addButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: orangered;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #addButton:hover {
+            background-color: orangered;
+        }
+
+        #startButton {
+
+            padding: 12px 30px;
+            font-size: 16px;
+            background-color: orangered;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="introScreen">
+        <img src="./logo.png" alt="Logo" style="width: 70%; max-width: 500px; margin-top: 40px;">
+        <p style="font-size: 18px; margin: 20px; color: brown; background-color: white;">
+            ¡Hola!<br>
+            Elegí un residuo para pintar con el pigmento que se le puede extraer.<br> Podés agregarle agua para aclarar
+            el pigmento.<br>
+            Dejá volar tu creatividad y pintá.<br>
+            Luego apretá "AGREGAR" para unir tu producción al Mural Virtual.
+        </p>
+        <button id="startButton">INICIAR</button>
+    </div>
+
+
+    <div id="mainApp" style="display: none;">
+        <div style="text-align: center;">
+            <!-- Colores -->
+            <img id="color1" class="color-picker" src="./2.png" alt="Marrón" />
+            <img id="color2" class="color-picker" src="./1.png" alt="Verde" />
+            <img id="color3" class="color-picker" src="./3.png" alt="Naranja" />
+            <img id="agua" class="color-picker" src="./agua.png" alt="Agua" />
+        </div>
+    </div>
+    <canvas style="text-align: center;" id="canvas"></canvas>
+    <div class="row" style="text-align: center;">
+        <div id="colorPreview"></div>
+        <div class=" column">
+            <p>Escribí tu nombre</p>
+ <input type="text" id="artistName" placeholder="Tu nombre" style="padding: 10px; margin-left: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;">
+
+        </div>
+
+       
+        <button id="addButton">AGREGAR</button>
+    </div>
+
+    <script>
+        document.getElementById("startButton").addEventListener("click", () => {
+            document.getElementById("introScreen").style.display = "none";
+            document.getElementById("mainApp").style.display = "block";
+            resizeCanvas();
+        });
+
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const colorPreview = document.getElementById("colorPreview");
+        const addButton = document.getElementById("addButton");
+
+        function resizeCanvas() {
+            canvas.width = canvas.clientWidth;
+            canvas.height = 500;
+        }
+
+        resizeCanvas();
+        window.addEventListener("resize", resizeCanvas);
+
+        let baseColor = "white";
+        let aguaLevel = 0;
+
+        function colorToHSL(color) {
+            const tmp = document.createElement("canvas");
+            tmp.width = tmp.height = 1;
+            const tmpCtx = tmp.getContext("2d");
+            tmpCtx.fillStyle = color;
+            tmpCtx.fillRect(0, 0, 1, 1);
+            const [r, g, b] = tmpCtx.getImageData(0, 0, 1, 1).data;
+
+            const rNorm = r / 255, gNorm = g / 255, bNorm = b / 255;
+            const max = Math.max(rNorm, gNorm, bNorm);
+            const min = Math.min(rNorm, gNorm, bNorm);
+            let h, s, l = (max + min) / 2;
+
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case rNorm: h = (gNorm - bNorm) / d + (gNorm < bNorm ? 6 : 0); break;
+                    case gNorm: h = (bNorm - rNorm) / d + 2; break;
+                    case bNorm: h = (rNorm - gNorm) / d + 4; break;
+                }
+                h /= 6;
+            }
+
+            return {
+                h: Math.round(h * 360),
+                s: Math.round(s * 100),
+                l: Math.round(l * 100)
+            };
+        }
+
+        function getLightenedColor() {
+            const hsl = colorToHSL(baseColor);
+            const lightness = Math.min(hsl.l + aguaLevel * 10, 95);
+            return `hsl(${hsl.h}, ${hsl.s}%, ${lightness}%)`;
+        }
+
+        function changeColor(color) {
+            baseColor = color;
+            aguaLevel = 0;
+            updatePreview();
+        }
+
+        function updatePreview() {
+            colorPreview.style.backgroundColor = getLightenedColor();
+        }
+
+        document.getElementById("color1").addEventListener("click", () => changeColor("brown"));
+        document.getElementById("color2").addEventListener("click", () => changeColor("green"));
+        document.getElementById("color3").addEventListener("click", () => changeColor("orange"));
+        document.getElementById("agua").addEventListener("click", () => {
+            aguaLevel++;
+            updatePreview();
+        });
+
+        let painting = false;
+
+        function startPosition(e) {
+            painting = true;
+            draw(e);
+        }
+
+        function endPosition() {
+            painting = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!painting) return;
+
+            ctx.lineWidth = 5;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = getLightenedColor();
+
+            ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+        }
+
+        canvas.addEventListener("mousedown", startPosition);
+        canvas.addEventListener("mouseup", endPosition);
+        canvas.addEventListener("mousemove", draw);
+
+        addButton.addEventListener("click", () => {
+            const imgData = canvas.toDataURL("image/png");
+            let name = document.getElementById("artistName").value.trim();
+            if (name === "") name = "Artista Desconocido";
+
+            let images = JSON.parse(localStorage.getItem('images')) || [];
+            images.push({ src: imgData, artist: name });
+            localStorage.setItem('images', JSON.stringify(images));
+
+            window.location.href = 'gallery.html';
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <title>MURAL VIRTUAL</title>
+    <style>
+        .rubik-600 {
+            font-family: "Rubik", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 600;
+            font-style: normal;
+        }
+
+
+        body {
+            background-image: url(./fondo1\ \(1\).jpg);
+            background-size: cover;
+            font-family: "Rubik";
+            text-align: center;
+
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            max-width: 1000px;
+            box-sizing: border-box;
+            justify-content: center;
+        }
+
+
+        .image-gallery img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+
+        }
+
+
+        .back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ffae00;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: "Rubik";
+        }
+
+        #clearGallery {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: "Rubik";
+        }
+
+        .back-button:hover {
+            background-color: #ffae00;
+        }
+
+        #toggleNames {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: rgb(10, 85, 0);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: "Rubik";
+        }
+    </style>
+</head>
+
+<body>
+    <h1>MURAL VIRTUAL</h1>
+    <p>¡Ahora ya sos parte del mural!</p>
+
+
+    <button id="toggleNames">OCULTAR ARTISTA</button>
+    <button class="back-button" onclick="window.location.href='index.html'">VOLVER</button>
+
+
+    <div class="image-gallery" id="imageGallery"></div>
+    <button id="clearGallery">BORRAR TODO</button>
+    <script>
+        window.onload = function () {
+            let showNames = true;
+
+            const toggleButton = document.getElementById("toggleNames");
+            const imageGallery = document.getElementById("imageGallery");
+
+            const images = JSON.parse(localStorage.getItem('images')) || [];
+
+            function renderGallery() {
+                imageGallery.innerHTML = ""; // Limpiar la galería
+
+                images.slice().reverse().forEach(item => {
+                    const container = document.createElement("div");
+                    container.style.textAlign = "center";
+
+                    const img = document.createElement("img");
+                    img.src = item.src || item; // Soporte para imágenes antiguas
+                    container.appendChild(img);
+
+                    if (showNames && item.artist) {
+                        const caption = document.createElement("p");
+                        caption.textContent = item.artist;
+                        caption.style.fontWeight = "bold";
+                        caption.style.margin = "5px 0";
+                        caption.style.color = "black";
+                        container.appendChild(caption);
+                    }
+
+                    imageGallery.appendChild(container);
+                });
+            }
+
+            toggleButton.addEventListener("click", () => {
+                showNames = !showNames;
+                toggleButton.textContent = showNames ? "OCULTAR ARTISTA" : "MOSTRAR ARTISTA";
+                renderGallery();
+            });
+
+            renderGallery();
+
+            document.getElementById("clearGallery").addEventListener("click", () => {
+                const confirmDelete = confirm("¿Querés borrar TODAS las producciones del Mural Virtual?");
+                if (confirmDelete) {
+                    localStorage.removeItem("images");
+                    renderGallery(); // vuelve a mostrar la galería vacía
+                }
+            });
+
+        }
+    </script>
+
+</body>
+
+</html>
