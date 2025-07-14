@@ -42,14 +42,15 @@
 
         #canvas {
             border: 2px solid black;
-            width: 100%;
-            height: 500px;
+            width: 400px;
+            height: 400px;
             cursor: crosshair;
             background-color: white;
             display: block;
             margin: 0 auto;
-            touch-action: none; /* ✅ Previene el scroll en móvil */
+            touch-action: none;
         }
+
 
         .color-picker {
             flex: 0 0 auto;
@@ -59,13 +60,13 @@
             max-height: 100px;
             min-width: 30px;
             min-height: 30px;
-            margin: 5px;
+            margin: 1%;
             cursor: pointer;
             object-fit: contain;
         }
 
         #colorPreview {
-            margin-top: 10px;
+         
             width: 100px;
             height: 100px;
             border: 2px solid #000;
@@ -91,31 +92,29 @@
             justify-content: center;
             align-items: center;
             overflow-x: auto;
-            padding: 10px;
-            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .row {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 20px;
-            padding: 0 10px;
-            text-align: center;
-            width: 100%;
-        }
+    .row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 1px 0;
+    text-align: center;
+    width: 100%;
+}
+
 
         @media (max-width: 600px) {
             .color-picker {
-                width: 70px;
-                height: 70px;
+                width: 60px;
+                height: 60px;
             }
 
             #colorPreview {
-                width: 70px;
-                height: 70px;
+                width: 50px;
+                height: 50px;
             }
 
             #artistName {
@@ -138,36 +137,51 @@
 
 <body>
     <div id="introScreen">
-        <img src="./logo.png" alt="Logo" style="width: 70%; max-width: 500px; margin-top: 40px;">
+        <img src="./logo.png" alt="Logo" style="width: 50%; max-width: 400px; margin-top: 40px;">
         <p style="font-size: 18px; margin: 20px; color: brown; background-color: white;">
-            ¡Hola!<br>
-            Elegí un residuo para pintar con el pigmento que se le puede extraer.<br> Podés agregarle agua para aclarar
+            Elegí un residuo o verdura para pintar con el pigmento que se le puede extraer.<br> Podés agregarle agua
+            para aclarar
             el pigmento.<br>
+            Luego apretá "AGREGAR" para unir tu producción al Mural Virtual.<br>
             Dejá volar tu creatividad y pintá.<br>
-            Luego apretá "AGREGAR" para unir tu producción al Mural Virtual.
         </p>
         <button id="startButton">INICIAR</button>
     </div>
 
     <div id="mainApp" style="display: none;">
         <div class="color-row">
-            <img id="color1" class="color-picker" src="./2.png" alt="Marrón" />
-            <img id="color2" class="color-picker" src="./1.png" alt="Verde" />
-            <img id="color3" class="color-picker" src="./3.png" alt="Naranja" />
-            <img id="agua" class="color-picker" src="./agua.png" alt="Agua" />
+            <div class="row">
+                <img id="color1" class="color-picker" src="./2.png" alt="Marrón" />
+                <img id="color2" class="color-picker" src="./1.png" alt="Verde" />
+                <img id="color3" class="color-picker" src="./3.png" alt="Naranja" />
+                <img id="agua" class="color-picker" src="./agua.png" alt="Agua" />
+            </div>
+
+            <div class="row">
+                <img id="color4" class="color-picker" src="./repollo.jpg" alt="Fucsia" />
+                <img id="color5" class="color-picker" src="./remolacha.jpg" alt="Violeta oscuro" />
+                <img id="color6" class="color-picker" src="./cebolla.jpg" alt="Naranja apagado" />
+                <div id="colorPreview"></div>
+
+            </div>
+
+
+
+
         </div>
     </div>
 
     <canvas id="canvas"></canvas>
 
     <div class="row">
-        <div id="colorPreview"></div>
+
+
         <div>
-            <p style="margin: 0;">Escribí tu nombre</p>
             <input type="text" id="artistName" placeholder="Tu nombre"
                 style="padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;">
-            <button id="addButton">AGREGAR</button>
+
         </div>
+        <button id="addButton" style="margin: 5%;" >AGREGAR</button>
     </div>
 
     <script>
@@ -180,30 +194,17 @@
         let aguaLevel = 0;
         let painting = false;
 
-    function resizeCanvas() {
-    const tempImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-    canvas.width = canvas.clientWidth;
-    canvas.height = 500;
-
-    ctx.putImageData(tempImage, 0, 0);
-}
+        function resizeCanvas() {
+            canvas.width = 400;
+            canvas.height = 400;
+        }
 
 
-        window.addEventListener("resize", resizeCanvas);
-        resizeCanvas();
-
-       document.getElementById("startButton").addEventListener("click", () => {
-    document.getElementById("introScreen").style.display = "none";
-    document.getElementById("mainApp").style.display = "block";
-    
-    // Solo redimensionamos una vez al iniciar
-    resizeCanvas();
-
-    // Luego quitamos el evento para evitar que se borre accidentalmente
-    window.removeEventListener("resize", resizeCanvas);
-});
-
+        document.getElementById("startButton").addEventListener("click", () => {
+            document.getElementById("introScreen").style.display = "none";
+            document.getElementById("mainApp").style.display = "block";
+            resizeCanvas();
+        });
 
         function colorToHSL(color) {
             const tmp = document.createElement("canvas");
@@ -253,6 +254,9 @@
         document.getElementById("color1").addEventListener("click", () => changeColor("brown"));
         document.getElementById("color2").addEventListener("click", () => changeColor("green"));
         document.getElementById("color3").addEventListener("click", () => changeColor("orange"));
+        document.getElementById("color4").addEventListener("click", () => changeColor("fuchsia"));
+        document.getElementById("color5").addEventListener("click", () => changeColor("indigo"));
+        document.getElementById("color6").addEventListener("click", () => changeColor("#cc6600")); // naranja apagado
         document.getElementById("agua").addEventListener("click", () => {
             aguaLevel++;
             updatePreview();
